@@ -1,6 +1,7 @@
 package com.sparta.legendofdelivery.domain.like.service;
 
 import com.sparta.legendofdelivery.domain.like.entity.Like;
+import com.sparta.legendofdelivery.domain.like.mapper.LikePageMapper;
 import com.sparta.legendofdelivery.domain.like.repository.LikeRepository;
 import com.sparta.legendofdelivery.domain.review.entity.Review;
 import com.sparta.legendofdelivery.domain.review.repository.ReviewRepository;
@@ -8,6 +9,9 @@ import com.sparta.legendofdelivery.domain.user.entity.User;
 import com.sparta.legendofdelivery.global.dto.MessageResponse;
 import com.sparta.legendofdelivery.global.exception.BadRequestException;
 import com.sparta.legendofdelivery.global.exception.NotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -53,6 +57,19 @@ public class LikeService {
             review.downLikeCount();
             likeRepository.delete(checkIslike);
             return new MessageResponse(200, "좋아요 취소를 성공했습니다.");
+        }
+
+    }
+
+    public Page<LikePageMapper> getLikePage(User user, int page){
+
+        Pageable pageable = PageRequest.of(page,5);
+        Page<LikePageMapper> likePage = likeRepository.UsersLikePaging(user,pageable);
+
+        if(!likePage.isEmpty()){
+            return likePage;
+        } else{
+            throw new NotFoundException("좋아요 누른 리뷰가 없습니다.");
         }
 
     }

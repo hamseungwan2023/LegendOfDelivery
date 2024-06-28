@@ -2,6 +2,7 @@ package com.sparta.legendofdelivery.domain.dibs.service;
 
 import com.sparta.legendofdelivery.domain.dibs.dto.DibsResponseDto;
 import com.sparta.legendofdelivery.domain.dibs.entity.Dibs;
+import com.sparta.legendofdelivery.domain.dibs.mapper.DibsPageMapper;
 import com.sparta.legendofdelivery.domain.dibs.repository.DibsRepository;
 import com.sparta.legendofdelivery.domain.store.entity.Store;
 import com.sparta.legendofdelivery.domain.store.repository.StoreRepository;
@@ -12,6 +13,9 @@ import com.sparta.legendofdelivery.global.exception.BadRequestException;
 import com.sparta.legendofdelivery.global.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,18 +67,13 @@ public class DibsService {
 
     }
 
-    public DataResponse<List<DibsResponseDto>> getAllDibsByUser(User user){
+    public Page<DibsPageMapper> getAllDibsByUser(User user, int page){
 
-        List<Dibs> dibsList = dibsRepository.findAllByUserId(user.getId());
-        List<DibsResponseDto> dibsResponseDtoList = new ArrayList<>();
+        Pageable pageable = PageRequest.of(page,5);
+        Page<DibsPageMapper> dibsList = dibsRepository.dibsPaging(user,pageable);
 
         if (!dibsList.isEmpty()){
-            for (Dibs dibs : dibsList) {
-                dibsResponseDtoList.add(DibsResponseDto.toDto(dibs));
-            }
-
-            return new DataResponse<>(200, "찜한 가게 목록 조회를 성공했습니다.", dibsResponseDtoList);
-
+            return dibsList;
         } else {
             throw new NotFoundException("찜한 가게가 없습니다.");
         }
