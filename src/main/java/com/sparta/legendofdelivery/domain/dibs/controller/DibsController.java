@@ -2,6 +2,7 @@ package com.sparta.legendofdelivery.domain.dibs.controller;
 
 import com.sparta.legendofdelivery.domain.dibs.entity.Dibs;
 import com.sparta.legendofdelivery.domain.dibs.mapper.DibsPageMapper;
+import com.sparta.legendofdelivery.domain.dibs.mapper.DibsRankMapper;
 import com.sparta.legendofdelivery.domain.dibs.service.DibsService;
 import com.sparta.legendofdelivery.domain.user.security.UserDetailsImpl;
 import com.sparta.legendofdelivery.global.dto.MessageResponse;
@@ -42,6 +43,13 @@ public class DibsController {
     public ResponseEntity<Page<DibsPageMapper>> getAllDibsByUser(@RequestParam(defaultValue = "0") int page, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         return ResponseEntity.ok(dibsService.getAllDibsByUser(userDetails.getUser(),page));
+
+    }
+
+    @GetMapping("/stores/dibs/rank")
+    public ResponseEntity<List<DibsRankMapper>> getDibsRank() {
+
+        return ResponseEntity.ok(dibsService.getDibsRank());
 
     }
 }

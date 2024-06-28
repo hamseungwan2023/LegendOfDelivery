@@ -3,6 +3,7 @@ package com.sparta.legendofdelivery.domain.dibs.service;
 import com.sparta.legendofdelivery.domain.dibs.dto.DibsResponseDto;
 import com.sparta.legendofdelivery.domain.dibs.entity.Dibs;
 import com.sparta.legendofdelivery.domain.dibs.mapper.DibsPageMapper;
+import com.sparta.legendofdelivery.domain.dibs.mapper.DibsRankMapper;
 import com.sparta.legendofdelivery.domain.dibs.repository.DibsRepository;
 import com.sparta.legendofdelivery.domain.store.entity.Store;
 import com.sparta.legendofdelivery.domain.store.repository.StoreRepository;
@@ -77,6 +78,12 @@ public class DibsService {
         } else {
             throw new NotFoundException("찜한 가게가 없습니다.");
         }
+
+    }
+
+    public List<DibsRankMapper> getDibsRank() {
+
+        return dibsRepository.getDibsRanks();
 
     }
 
