@@ -34,6 +34,7 @@ public class LikeService {
         if (checkIsLike != null) {
             throw new BadRequestException("이미 좋아요를 누른 리뷰입니다.");
         } else {
+            review.upLikeCount();
             Like like = new Like(review, user);
             likeRepository.save(like);
             return new MessageResponse(200, "좋아요 등록에 성공했습니다.");
@@ -43,12 +44,13 @@ public class LikeService {
 
     public MessageResponse deleteLike(Long reviewId, User user) {
 
-        findReviewById(reviewId);
+        Review review = findReviewById(reviewId);
         Like checkIslike = findLikeByReviewIdAndUserId(reviewId, user.getId());
 
         if (checkIslike == null) {
             throw new NotFoundException("해당 리뷰는 좋아요가 등록되어 있지 않습니다.");
         } else {
+            review.downLikeCount();
             likeRepository.delete(checkIslike);
             return new MessageResponse(200, "좋아요 취소를 성공했습니다.");
         }
