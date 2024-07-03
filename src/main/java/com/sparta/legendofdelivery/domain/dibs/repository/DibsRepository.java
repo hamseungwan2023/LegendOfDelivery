@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface DibsRepository extends JpaRepository<Dibs, Long> {
+public interface DibsRepository extends JpaRepository<Dibs, Long>, DibsRepositoryCustom {
     Optional<Dibs> findByStoreIdAndUserId(long storeId, long userId);
 
     @Query(value =

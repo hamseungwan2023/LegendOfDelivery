@@ -1,6 +1,7 @@
 package com.sparta.legendofdelivery.domain.dibs.service;
 
-import com.sparta.legendofdelivery.domain.dibs.dto.DibsResponseDto;
+import com.querydsl.core.Tuple;
+import com.sparta.legendofdelivery.domain.dibs.dto.DibsSearchCond;
 import com.sparta.legendofdelivery.domain.dibs.entity.Dibs;
 import com.sparta.legendofdelivery.domain.dibs.mapper.DibsPageMapper;
 import com.sparta.legendofdelivery.domain.dibs.mapper.DibsRankMapper;
@@ -8,7 +9,6 @@ import com.sparta.legendofdelivery.domain.dibs.repository.DibsRepository;
 import com.sparta.legendofdelivery.domain.store.entity.Store;
 import com.sparta.legendofdelivery.domain.store.repository.StoreRepository;
 import com.sparta.legendofdelivery.domain.user.entity.User;
-import com.sparta.legendofdelivery.global.dto.DataResponse;
 import com.sparta.legendofdelivery.global.dto.MessageResponse;
 import com.sparta.legendofdelivery.global.exception.BadRequestException;
 import com.sparta.legendofdelivery.global.exception.NotFoundException;
@@ -20,7 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -86,6 +85,13 @@ public class DibsService {
         return dibsRepository.getDibsRanks();
 
     }
+
+    public List<Tuple> searchDibs(DibsSearchCond cond, int page) {
+        Pageable pageable = PageRequest.of(page,5);
+        return dibsRepository.searchCond(cond, pageable);
+
+    }
+
 
     private Store findStoreById(Long storeId){
         return storeRepository.findById(storeId).orElseThrow(

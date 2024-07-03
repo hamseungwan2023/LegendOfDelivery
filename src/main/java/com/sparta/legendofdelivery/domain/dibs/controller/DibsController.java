@@ -1,9 +1,14 @@
 package com.sparta.legendofdelivery.domain.dibs.controller;
 
-import com.sparta.legendofdelivery.domain.dibs.entity.Dibs;
+import com.querydsl.core.Tuple;
+import com.sparta.legendofdelivery.domain.dibs.dto.DibsSearchCond;
+import com.sparta.legendofdelivery.domain.dibs.dto.StoreUserDto;
 import com.sparta.legendofdelivery.domain.dibs.mapper.DibsPageMapper;
 import com.sparta.legendofdelivery.domain.dibs.mapper.DibsRankMapper;
 import com.sparta.legendofdelivery.domain.dibs.service.DibsService;
+import com.sparta.legendofdelivery.domain.store.entity.Category;
+import com.sparta.legendofdelivery.domain.store.entity.QStore;
+import com.sparta.legendofdelivery.domain.user.entity.QUser;
 import com.sparta.legendofdelivery.domain.user.security.UserDetailsImpl;
 import com.sparta.legendofdelivery.global.dto.MessageResponse;
 import org.springframework.data.domain.Page;
@@ -12,6 +17,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -52,4 +58,27 @@ public class DibsController {
         return ResponseEntity.ok(dibsService.getDibsRank());
 
     }
+
+    @GetMapping("/search")
+    public List<StoreUserDto> searchDibs(@RequestParam(required = false) Category category,
+                                         @RequestParam(required = false) Long minDibsCount,
+                                         @RequestParam(required = false) Long maxDibsCount,
+                                         @RequestParam(required = false) int page) {
+        DibsSearchCond cond = DibsSearchCond.builder()
+                .category(category)
+                .minDibsCount(minDibsCount)
+                .maxDibsCount(maxDibsCount)
+                .build();
+
+        List<Tuple> tuples = dibsService.searchDibs(cond, page);
+
+
+        return tuples.stream()
+                .map(tuple -> new StoreUserDto(
+                        tuple.get(QStore.store.name),
+                        tuple.get(QUser.user.name)))
+                .collect(Collectors.toList());
+
+    }
+
 }
