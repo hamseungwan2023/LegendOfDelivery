@@ -27,10 +27,9 @@ public interface DibsRepository extends JpaRepository<Dibs, Long>, DibsRepositor
     Page<DibsPageMapper> dibsPaging(User user, Pageable pageable);
 
     @Query(value =
-            "SELECT COUNT(*) AS count, s.name AS store_name " +
-                    "FROM dibs d " +
-                    "JOIN store s ON d.store_id = s.id " +
-                    "GROUP BY d.store_id " +
+            "select s.name as storeName, s.dibs_count as count " +
+                    "from store s " +
+                    "order by s.dibs_count desc " +
                     "LIMIT 10",
             nativeQuery = true)
     List<DibsRankMapper> getDibsRanks();
